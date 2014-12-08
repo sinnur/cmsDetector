@@ -5,7 +5,7 @@
 # implementing the "-e" flag to enable automated exploitation.
 
 import requests
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["admin/"]
 
 def check(header, content, targetURL):
@@ -13,7 +13,7 @@ def check(header, content, targetURL):
 		return True
 	else:	
 		for directory in directories:
-			r = requests.get(targetURL + directory)
+			r = requests.get(targetURL + directory, headers=headz)
 			if r.status_code == 200:
 				if "GetSimple CMS".upper() in content or "getsimple.js".upper() in content or 'content="GetSimple'.upper() in content:
 					return True

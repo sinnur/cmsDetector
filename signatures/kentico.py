@@ -1,7 +1,6 @@
 # Detects Kentico CMS
 # @penetrat0r
-#
-# Test site verified http://www.magnoliaav.com/
+# @ccampbell232
 # Vulnerability discovered on Kentico CMS platform at the following directory:
 # /CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx
 # Build automated enumeration of this page
@@ -9,14 +8,14 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["CMSPages/GetCMSVersion.aspx", "CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx"]
 userlist = []
 
 def check(header, content, targetURL):
 	if "CMSPreferredCulture".upper() in header or "CMSCurrentTheme".upper() in header:
 		try:
-			v = requests.get(targetURL +  "CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx")
+			v = requests.get(targetURL +  "CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx", headers=headz)
 			data = v.content
 			print "\n** Vulnerability discovered on Kentico CMS platform at the following directory: **\n"
 			print "   /CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx \n"
@@ -31,7 +30,7 @@ def check(header, content, targetURL):
 		return True	
 	else:	
 		for directory in directories:
-			r = requests.get(targetURL + directory)
+			r = requests.get(targetURL + directory, headers=headz)
 			file_contents = str(r.content).upper()
 			if directory == "CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx":
 				if "titleFullScreen".upper() in content:

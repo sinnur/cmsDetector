@@ -5,11 +5,12 @@
 import requests
 import re
 
+headz = {'User-Agent': 'Firefox'}
 directories = ["robots.txt","js/lib/flex.js"]
 
 def check(header, content, targetURL):
 
-    r = requests.get(targetURL + "app/etc/local.xml")
+    r = requests.get(targetURL + "app/etc/local.xml", headers=headz)
 
     if "Magento default".upper() in content or "Mage.Cookies.path".upper() in content or "Magento".upper() in content:
         try:
@@ -33,7 +34,7 @@ def check(header, content, targetURL):
         return True
     else:    
         for directory in directories:
-            r = requests.get(targetURL + directory)
+            r = requests.get(targetURL + directory, headers=headz)
             if r.status_code == 200: 
                 if "Magento".upper() in content:
                     if exposed == True:

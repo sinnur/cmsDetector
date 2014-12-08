@@ -1,12 +1,15 @@
-# Detects SilverStripe CMS
-# @penetrat0r
+# Detects Concrete5
+# @ccampbell232
+
 
 import requests
+import re
+
 headz = {'User-Agent': 'Firefox'}
-directories = ["Security/login?BackURL=%2Fadmin%2Fpages"]
+directories = ["concrete/css/ccm.tinymce.css", "concrete/js/ccm.app.js", "index.php"]
 
 def check(header, content, targetURL):
-    if '<content="SilverStripe'.upper() in content:
+    if 'generator" content="concrete5'.upper() in content:
         return True
     else:
         for directory in directories:
@@ -14,9 +17,9 @@ def check(header, content, targetURL):
                 r = requests.get(targetURL + directory, headers=headz)
                 content = str(r.content).upper()
                 if r.status_code == 200:
-                    if 'content="SilverStripe'.upper() in content:
+                    if 'ul.ccm-dialog-tabs'.upper() in content: 
+                        return True
+                    elif 'ccm-block-type-available'.upper() in content:
                         return True
             except Exception:
                 pass
-
-

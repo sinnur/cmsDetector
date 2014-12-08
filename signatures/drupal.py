@@ -2,7 +2,7 @@
 # @penetrat0r
 
 import requests
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["admin/", "robots.txt"]
 
 def check(header, content, targetURL):
@@ -10,7 +10,7 @@ def check(header, content, targetURL):
 		return True
 	else:	
 		for directory in directories:
-			r = requests.get(targetURL + directory)
+			r = requests.get(targetURL + directory, headers=headz)
 			if r.status_code == 200:
 				if directory == "/robots.txt" and "Disallow: /?q=admin/".upper() in content \
 				and "Disallow: /?q=comment/reply/".upper() in content \

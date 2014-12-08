@@ -3,7 +3,7 @@
 
 import requests
 import re
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["administrator", "joomla.xml", "templates/system/css/template.css", "templates/system/css/system.css"]
 
 def check(header, content, targetURL):
@@ -11,7 +11,7 @@ def check(header, content, targetURL):
 		return True
 	else:	
 		for directory in directories:
-			r = requests.get(targetURL + directory)
+			r = requests.get(targetURL + directory, headers=headz)
 			if r.status_code == 200 or r.status_code == 403:
 				if "Joomla! Administration Login".upper() in content or "http://www.joomla.org".upper() in content or "joomla".upper() in header:
 					return True
@@ -20,7 +20,7 @@ def check(header, content, targetURL):
 						if "extension version".upper() in content:
 							return True
 						else:
-							if requests.get(targetURL + "notarealpagenotarealpage.php") == 200:
+							if requests.get(targetURL + "notarealpagenotarealpage.php", headers=headz) == 200:
 								if "File not found".upper() not in content or "Page not found".upper() not in content:
 									return True				
 
@@ -33,7 +33,7 @@ def checkVersion(header, content, targetURL):
 		return "Joomla 1.5"
 	else:	
 		for url in versionURL:
-			r = requests.get(targetURL + url)
+			r = requests.get(targetURL + url, headers=headz)
 			content = str(r.content).upper()
 			if r.status_code == 200:
 				if url == "language/en-GB/en-GB.xml":

@@ -1,8 +1,8 @@
 # Detects 1024 CMS
-# @charlie.campbell @penetrat0r
+# @ccmapbell232 @penetrat0r
 
 import requests
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["index.php"]
 
 def check(header, content, targetURL):

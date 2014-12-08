@@ -6,6 +6,7 @@
 # magnoliaav.com is now wordpress
 
 import requests
+headz = {'User-Agent': 'Firefox'}
 
 directories = ["wp-admin/", "wp-content/", "wp-login/", "wp/", "blog/"]
 
@@ -15,7 +16,7 @@ def check(header, content, targetURL):
     else:
         for directory in directories:
             try:
-                r = requests.get(targetURL + directory)
+                r = requests.get(targetURL + directory, headers=headz)
                 content = str(r.content).upper()
                 if r.status_code == 200:
                     if "Powered by WordPress".upper() in content or "wp-content".upper() in content or "wp-includes".upper in content:
@@ -24,10 +25,10 @@ def check(header, content, targetURL):
                 pass
 
 def checkVersion(header, content, targetURL):
-    versionURL = ["/","wp-admin/", "wp-content/", "wp-login/", "wp/", "blog/"]
+    versionURL = ["","wp-admin/", "wp-content/", "wp-login/", "wp/", "blog/"]
 
     for url in versionURL:
-        r = requests.get(targetURL + url)
+        r = requests.get(targetURL + url, headers=headz)
         content = str(r.content).upper()
         if r.status_code == 200:
             try:

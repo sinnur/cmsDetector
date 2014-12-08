@@ -2,7 +2,7 @@
 # @penetrat0r
 
 import requests
-
+headz = {'User-Agent': 'Firefox'}
 directories = ["administrator/"]
 
 def check(header, content, targetURL):
@@ -11,7 +11,7 @@ def check(header, content, targetURL):
         return True
     else:    
         for directory in directories:
-            r = requests.get(targetURL + directory)
+            r = requests.get(targetURL + directory, headers=headz)
             if "Mambo".upper() in content:
                 return True
                 

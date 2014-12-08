@@ -1,5 +1,7 @@
 Known Issues:
-Sites not ending in .com can sometimes have issues.  Will fix logic error soon.
+When using something with checkVersion (such as joomla module) without the -e flag, we need to kill
+application flow right after version is detected.  Red and white text at end appear for no reason 
+
 
 Improvements:
 

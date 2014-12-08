@@ -1,11 +1,10 @@
 
 # Detects Django CMS
 # @penetrat0r
-# Test site verified http://www.sandmanhotels.com/, http://www.orange.ch/
-# Error occurs on http://djangosuit.com/.  I believe its because you aren't allowed to prepend "www".
 
 import requests
 
+headz = {'User-Agent': 'Firefox'}
 directories = ["en/admin/", "admin/"]
 
 def check(header, content, targetURL):
@@ -13,6 +12,6 @@ def check(header, content, targetURL):
         return True
     else:
         for directory in directories:
-            r = requests.get(targetURL + directory)
+            r = requests.get(targetURL + directory, headers=headz)
             if "Django".upper() in content:
                 return True

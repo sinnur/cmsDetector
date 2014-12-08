@@ -1,8 +1,8 @@
 # Detects Adapt CMS
-# @charlie.campbell @penetrat0r
+# @ccampbell232 @penetrat0r
 
 import requests
-
+headz = {'User-Agent': 'Firefox'}
 
 def check(header, content, targetURL):    
     if "adaptcms".upper() in header:

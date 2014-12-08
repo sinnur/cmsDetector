@@ -6,6 +6,7 @@
 
 import requests
 
+headz = {'User-Agent': 'Firefox'}
 directories = ["login.aspx", "js/dnn.js", "js/dnncore.js"]
 
 def check(header, content, targetURL):
@@ -13,7 +14,7 @@ def check(header, content, targetURL):
 		return True
 	else:	
 		for directory in directories:
-			r = requests.get(targetURL + directory)
+			r = requests.get(targetURL + directory, headers=headz)
 			if r.status_code == 200:
 				if "DNNModuleContent".upper() in content or "/js/dnn.js".upper() in content or "/js/dnncore.js".upper() in content:
 					return True

@@ -4,10 +4,11 @@
 import requests
 import re
 
+headz = {'User-Agent': 'Firefox'}
 directories = ["CFIDE/administrator/","CFIDE/Administrator/index.cfm"]
 
 def check(header, content, targetURL):
-    r = requests.get(targetURL + "CFIDE/adminapi/administrator.cfc?method=getSalt")
+    r = requests.get(targetURL + "CFIDE/adminapi/administrator.cfc?method=getSalt", headers=headz)
     
     if r.status_code == 200:
         if "wddxPacket".upper() in str(r.content).upper():
@@ -17,13 +18,13 @@ def check(header, content, targetURL):
             print salt
             return "Adobe ColdFusion"
     else:
-        r = requests.get(targetURL)
+        r = requests.get(targetURL, headers=headz)
         if 'ColdFusion Administrator'.upper() in content:
             return "Adobe ColdFusion"
         else:
             for directory in directories:
                 try:
-                    r = requests.get(targetURL + directory)
+                    r = requests.get(targetURL + directory, headers=headz)
                     content = str(r.content).upper()
                     if r.status_code == 200:
                         if "ColdFusion Administrator".upper() in content:

@@ -1,30 +1,36 @@
 # Detects Ghost CMS
 # @penetrat0r
+# @ccampbell232 added RSS and JS checks
+
 
 import requests
 import re
-
-directories = ["ghost/signin/", "ghost/"]
+headz = {'User-Agent': 'Firefox'}
+directories = ["ghost/signin/", "ghost/", "rss/"]
 
 def check(header, content, targetURL):
     if '<meta name="generator" content="Ghost'.upper() in content:
         return True
+    elif '/ghost.min.js'.upper() in content:
+        return True
     else:
         for directory in directories:
             try:
-                r = requests.get(targetURL + directory)
+                r = requests.get(targetURL + directory, headers=headz)
                 content = str(r.content).upper()
                 if r.status_code == 200:
                     if "ghost-login".upper() in content or "<title>Ghost Admin".upper() in content:
+                        return True
+                    elif '<generator>Ghost'.upper() in content:
                         return True
             except Exception:
                 pass
 
 def checkVersion(header, content, targetURL):
-    versionURL = ["/","ghost/signin/", "ghost/"]
+    versionURL = ["","ghost/signin/", "ghost/"]
 
     for url in versionURL:
-        r = requests.get(targetURL + url)
+        r = requests.get(targetURL + url, headers=headz)
         content = str(r.content).upper()
         if r.status_code == 200:
             try:
