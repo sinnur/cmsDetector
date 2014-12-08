@@ -1,5 +1,5 @@
 # Detects Textpattern
-# @ccampbell232
+# @sinnur
 
 
 import requests

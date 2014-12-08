@@ -1,5 +1,5 @@
 # Detects Concrete5
-# @ccampbell232
+# @sinnur
 
 
 import requests

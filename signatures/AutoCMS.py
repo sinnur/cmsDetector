@@ -1,5 +1,5 @@
 # Detects AutoCMS
-# @ccampbell232 @penetrat0r
+# @sinnur @penetrat0r
 
 import requests
 directories = ["public_tpl/basic.css"]

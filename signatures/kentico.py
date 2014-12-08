@@ -1,6 +1,6 @@
 # Detects Kentico CMS
 # @penetrat0r
-# @ccampbell232
+# @sinnur
 # Vulnerability discovered on Kentico CMS platform at the following directory:
 # /CMSModules/Messaging/CMSPages/PublicMessageUserSelector.aspx
 # Build automated enumeration of this page

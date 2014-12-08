@@ -1,5 +1,5 @@
 # Detects AtomicCms
-# @ccampbell232 @penetrat0r
+# @sinnur @penetrat0r
 
 import requests
 #"Account/LogOn/?ReturnUrl=%2fadmin%2f"

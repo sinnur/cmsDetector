@@ -1,6 +1,6 @@
 # Detects Ghost CMS
 # @penetrat0r
-# @ccampbell232 added RSS and JS checks
+# @sinnur added RSS and JS checks
 
 
 import requests

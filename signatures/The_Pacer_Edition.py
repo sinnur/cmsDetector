@@ -1,5 +1,5 @@
 # Detects Pacer Edition CMS
-# @ccampbell232
+# @sinnur
 
 
 import requests

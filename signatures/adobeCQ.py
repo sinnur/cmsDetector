@@ -2,7 +2,7 @@
 # @penetrat0r
 # Need to add version checks
 # Detects Adobe CQ
-# @ccampbell232
+# @sinnur
 
 import requests
 headz = {'User-Agent': 'Firefox'}

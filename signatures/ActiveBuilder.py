@@ -1,5 +1,5 @@
 # Detects Active Builder CMS
-# @ccampbell232 @penetrat0r
+# @sinnur @penetrat0r
 
 import requests
 headz = {'User-Agent': 'Firefox'}

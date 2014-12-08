@@ -1,5 +1,5 @@
 # Detects Movable Type
-# @ccampbell232
+# @sinnur
 
 
 import requests

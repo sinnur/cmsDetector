@@ -1,5 +1,5 @@
 # Detects 1024 CMS
-# @ccmapbell232 @penetrat0r
+# @sinnur @penetrat0r
 
 import requests
 headz = {'User-Agent': 'Firefox'}

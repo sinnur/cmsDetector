@@ -1,5 +1,5 @@
 # Detects phpfusion
-# @ccampbell232
+# @sinnur
 
 
 import requests

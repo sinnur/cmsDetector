@@ -1,5 +1,5 @@
 # Detects Redaxscript
-# @ccampbell232
+# @sinnur
 
 
 import requests

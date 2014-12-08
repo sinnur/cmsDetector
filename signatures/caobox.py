@@ -1,5 +1,5 @@
 # Detects Caobox CMS
-# @ccampbell232 @penetrat0r
+# @sinnur @penetrat0r
 
 # Need to add further logic for the condition as false positves have been occurring.  Modified code to take out an explicit 200 response, but we should
 # set up a sample server and examine the admin page if we can't find one online
