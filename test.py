@@ -42,7 +42,7 @@ def socksf():
 	socket.socket = socks.socksocket
 	socket.create_connection = create_connection
 	## notify user of current ip address of the tunnel
-	ip = requests.get('http://my.ip.fi')
+	ip = requests.get('http://my.ip.fi', headers=headz)
 	print colors.red, "-" * 85
 	print colors.white, "Using SOCKS Proxy, Current Public IP address: " + colors.lightblue, ip.content
 
@@ -75,46 +75,46 @@ def load_module(code_path):
 		traceback.print_exc(file = sys.stderr)
 		raise
 
-
-def launcher(header, content, targetURL):
+def launcher(r, targetURL):
 	#Launches detection modules 
-	global success
+	status = r.status_code
+	header = str(r.headers).upper()
+	content = str(r.content).upper()
+	success = False
+
+	print "[Stage One] cmsDetector is currently analyzing the application..."
 	for sig in glob.glob("signatures/*.py"):
 		result = load_module(sig).check(header,content,targetURL)
-		## ***** Might need to change this from "None" to something else
-		## Possible to use if result: instead? .... Trying it...
-		#if result != None:
-		if result:
-			success = True
 
+		if result:
 			try:
+				#Attempts to enumerate version if checkVersion function exists
 				version = load_module(sig).checkVersion(header, content, targetURL)
-				print version
+				print "\n   >> " + version + "\n"
 				elapsedTime = "%.1f" % (time.time() - start_Time)
-				print "Detection took: " + elapsedTime + " seconds", colors.normal
 				if enumerationEnabled == True:
-					#print "breakpoint one"
-					#print " " + version
-					#print "Breakpoint... CheckVersion method found and enumeration enabled.. About to query ExploitDB method"
 					getExploitDB(version)
-					#exit()
+					print "[***] Detection took: " + elapsedTime + " seconds", colors.normal + "\n"
+					exit()
+				else:
+					exit()
 
 			except Exception as e: 
-				#print "Error detected in launcher... "
-				#print "Assuming no checkVersion method was detected.  Continuing as normal."
-				#print e
-
+				#Enumerates CMS but will not find a version
 				fileStage = os.path.splitext(sig)[0]
 				stagedFile = os.path.splitext(os.path.basename(fileStage))[0]
-				cmsDetections.append(stagedFile.upper())
-				print "Testing no checkversion found"
-				print "success = " + str(success)
+				print "\n   >> " + stagedFile.upper() + "\n"
+				elapsedTime = "%.1f" % (time.time() - start_Time)
 				
 				if enumerationEnabled == True:
-					#print "breakpoint two"
-					#print "Testing with " + stagedFile
 					getExploitDB(stagedFile)
-					#exit()
+					print "[***] Detection took: " + elapsedTime + " seconds", colors.normal + "\n"
+					exit()
+				else:
+					print "[*] Detection took: " + elapsedTime + " seconds", colors.normal + "\n"
+					exit()
+		
+	print "\n   >> No CMS was able to be enumerated. \n"
 
 class colors:
 	#Used for providing color to printed text
@@ -130,7 +130,17 @@ def help():
 	print colors.white, "CMS Detector v1.2", colors.blue
 	print "-" * 85
 	## added socks option
-	print colors.white, "Usage: cmsDetector.py", colors.red,"http://www.somedomain.com", colors.blue,"-s (SOCKS)\n", colors.normal 
+	print colors.white, "Usage: cmsDetector.py", colors.red,"http://www.somedomain.com", colors.blue,"-s (SOCKS)\n", colors.normal
+
+def banner():
+	print "\n"
+	print "  ______ .___  ___.      _______. _______   _______ .___________. _______   ______ .___________.  ______   .______      "
+ 	print " /      ||   \/   |     /       ||       \ |   ____||           ||   ____| /      ||           | /  __  \  |   _  \     "
+	print "|  ,----'|  \  /  |    |   (----`|  .--.  ||  |__   `---|  |----`|  |__   |  ,----'`---|  |----`|  |  |  | |  |_)  |    "
+	print "|  |     |  |\/|  |     \   \    |  |  |  ||   __|      |  |     |   __|  |  |         |  |     |  |  |  | |      /     "
+	print "|  `----.|  |  |  | .----)   |   |  '--'  ||  |____     |  |     |  |____ |  `----.    |  |     |  `--'  | |  |\  \----."
+ 	print " \______||__|  |__| |_______/    |_______/ |_______|    |__|     |_______| \______|    |__|      \______/  | _| `._____|"
+ 	print "\n"
 
 
 def getResponse(targetURL):
@@ -138,7 +148,7 @@ def getResponse(targetURL):
 	r = requests.get(targetURL, headers=headz)
 	newurl = r.url
 	if targetURL != newurl:
-		print "Redirecting you to " + newurl
+		print "[*] Redirecting you to " + newurl
 
 	analyzeResponse(r, newurl)
 
@@ -190,7 +200,7 @@ def getExploitDB(cmsName):
 	#print "Baseline content length = " + str(baselineLength)
 
 	try:
-		print "Attempting to query ExploitDB for additional vulnerabilities.."
+		print "[Stage Two] Enumerating other potential vulnerabilities.."
 		exploitQuery = "http://www.exploit-db.com/search/?action=search&filter_page=1&filter_description="
 		exploitQuery += cmsName
 		exploitQuery += "&filter_exploit_text=&filter_author=&filter_platform=0&filter_type=0&filter_lang_id=0&filter_port=&filter_osvdb=&filter_cve="
@@ -209,7 +219,7 @@ def getExploitDB(cmsName):
 			tables = soup.findAll("td", attrs={"class":"list_explot_description"})
 			
 			#### Test code assuming a valid response is returned
-			print "\nExploitDB has returned the following potential exploits:\n"
+			print "\n[**] ExploitDB has returned the following potential exploits:\n"
 
 			try:
 				for robblers in range(len(tables)):
@@ -217,7 +227,7 @@ def getExploitDB(cmsName):
 					y = str(x).split(">")[1::2]
 					z = str(y[0]).split("<")
 
-					print z[0]
+					print "   >> " + z[0]
 					
 			except Exception as e:
 				#Thoroughly test here.... Only forseeable test case is a query returning no results
@@ -227,9 +237,8 @@ def getExploitDB(cmsName):
 				print "Exception was caught when attempting to parse results of exploit db table data"
 				print e
 		else:
-			print "ExploitDB returned no potential vulnerabilities"
-
-		print "\n"
+			print "[**] ExploitDB returned no potential vulnerabilities"
+			print "\n"
 	except Exception as e:
 		pass
 		#print e
@@ -239,7 +248,7 @@ def start(argv):
 		userInput = sys.argv[1]
 		try:
 			if userInput.endswith("/"):
-				getResponse(UserInput)
+				getResponse(sys.argv[1])
 			else:
 				getResponse(sys.argv[1] + "/")
 		except Exception as e:
@@ -259,26 +268,27 @@ def start(argv):
 		except Exception:
 			print ("You managed to find a bug despite a number of try catch conditions.  Congratulations.")
 	except Exception as e:
+		print "Hostname lookup has failed.  Please ensure you've entered a proper URL."
 		print e
 
 if __name__ == '__main__':
-	userInput = sys.argv[1]
+	userInput = sys.argv
 	if len(argv) < 2:
 		help()
+		banner()
 		exit()
 		## for socks menu sinnur
-	elif (userInput.startswith("http://") or userInput.startswith("https://")) and len(argv) == 2:
-		start(argv)
-	elif len(argv) == 3 and sys.argv[2] == '-s':
-		print len(argv)		
+	elif len(argv) > 2 and sys.argv[2] == '-s':
 		socksf()
 		start(argv)
 		## for calling help sinnur
 	elif userInput == '-h' or '--help':
 		help()
+		banner()
 		exit()
 	else:
 		try:
+			banner()
 			start(argv[2:])
 		except Exception as e:
 			print e
